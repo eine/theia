@@ -1,0 +1,29 @@
+name: 'example'
+
+on:
+  push:
+  pull_request:
+
+jobs:
+
+  linux:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v1
+    - uses: actions/setup-node@v1
+      with:
+        node-version: '10.15.3'
+    - name: Install dependencies
+      run: |
+        sudo apt-get install libx11-dev libxkbfile-dev
+    - name: Build/install theia
+      run: |
+        yarn
+    - name: Build examples/browser
+      run: |
+        cd examples/browser
+        yarn theia build --mode production
+    - uses: actions/upload-artifact@master
+      with:
+        name: example-browser
+        path: examples/browser/lib
